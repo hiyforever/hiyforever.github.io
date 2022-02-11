@@ -1,0 +1,186 @@
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html;charset=utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>碰十游戏</title>
+<style>
+    body {
+        text-align: center
+    }
+
+    img {
+        border-radius: 50%
+    }
+
+    #tmp {
+        display: none;
+        background-color: PowderBlue;
+        width: 80%;
+        height: 70%;
+        position: absolute;
+        left: 10%;
+        top: 20%;
+        border-radius: 20%;
+        opacity: .9
+    }
+</style>
+<input type="radio" name="diff" checked="checked">普通</input>
+<input type="radio" name="diff">困难</input>
+<button onclick="imlt.innerHTML=list[0].checked?localStorage.mlts:localStorage.mltn;iult.innerHTML=list[0].checked?localStorage.ults:localStorage.ultn;localStorage.state=list[0].checked;start()">重来</button><br>
+<a id="ista"></a>&nbsp&nbsp当前回合:<a id="ilt"></a><br>最快胜利:<a id="imlt"></a>&nbsp&nbsp最长坚持:<a id="iult"></a><br><br>
+<img id="itb" style="-webkit-transform:scale(1,-1)"><img id="ita" style="-webkit-transform:scale(-1,-1)"><br><br><br>
+<img id="ima"><img id="imb" style="-webkit-transform:scale(-1,1)">
+<div id="tmp" onclick="style.display='none'"><img src="pengshi.png" id="ires"><br><a id="res"></a></div>
+<script>
+    for (var i = 0; i < 10; i++)res.innerHTML = '<img src="pengshi_' + i + '.png">';
+    res.innerHTML = "";
+    if (document.body.clientWidth < document.body.clientHeight) {
+        ita.style.width = "45%";
+        itb.style.width = "45%";
+        ima.style.width = "45%";
+        imb.style.width = "45%";
+        res.style.fontSize = document.body.clientWidth * 0.1 + "px";
+        ires.style.width = "50%";
+    }
+    else {
+        ita.style.height = "30%";
+        itb.style.height = "30%";
+        ima.style.height = "30%";
+        imb.style.height = "30%";
+        res.style.fontSize = document.body.clientHeight * 0.1 + "px";
+        ires.style.height = "50%";
+    }
+    if (document.hasOwnProperty("ontouchstart")) {
+        itb.ontouchstart = function () { itb.style.backgroundColor = '#8d8'; ita.style.backgroundColor = '#fff'; get() };
+        ita.ontouchstart = function () { ita.style.backgroundColor = '#8d8'; itb.style.backgroundColor = '#fff'; get() };
+        ima.ontouchstart = function () { ima.style.backgroundColor = '#aaf'; imb.style.backgroundColor = '#fff'; get() };
+        imb.ontouchstart = function () { imb.style.backgroundColor = '#aaf'; ima.style.backgroundColor = '#fff'; get() };
+    }
+    else {
+        itb.onclick = function () { itb.style.backgroundColor = '#8d8'; ita.style.backgroundColor = '#fff'; get() };
+        ita.onclick = function () { ita.style.backgroundColor = '#8d8'; itb.style.backgroundColor = '#fff'; get() };
+        ima.onclick = function () { ima.style.backgroundColor = '#aaf'; imb.style.backgroundColor = '#fff'; get() };
+        imb.onclick = function () { imb.style.backgroundColor = '#aaf'; ima.style.backgroundColor = '#fff'; get() };
+    }
+    var list = document.getElementsByName("diff");
+    localStorage.mlts |= 0;
+    localStorage.mltn |= 0;
+    localStorage.ults |= 0;
+    localStorage.ultn |= 0;
+    if (localStorage.state && localStorage.ta * localStorage.tb * localStorage.ma * localStorage.mb != 0) {
+        if (localStorage.state == "true") ista.innerHTML = "普通模式";
+        else { ista.innerHTML = "困难模式"; list[1].checked = true; }
+        ilt.innerHTML = localStorage.lt;
+        ita.src = "pengshi_" + localStorage.ta + ".png";
+        itb.src = "pengshi_" + localStorage.tb + ".png";
+        ima.src = "pengshi_" + localStorage.ma + ".png";
+        imb.src = "pengshi_" + localStorage.mb + ".png";
+    }
+    else { localStorage.state = "true"; start() }
+    imlt.innerHTML = list[0].checked ? localStorage.mlts : localStorage.mltn;
+    iult.innerHTML = list[0].checked ? localStorage.ults : localStorage.ultn;
+    function start() {
+        localStorage.ta = 1;
+        localStorage.tb = 1;
+        localStorage.ma = 1;
+        localStorage.mb = 1;
+        localStorage.lt = 0;
+        ilt.innerHTML = 0;
+        ista.innerHTML = list[0].checked ? "普通模式" : "困难模式";
+        ita.src = "pengshi_1.png";
+        itb.src = "pengshi_1.png";
+        ima.src = "pengshi_1.png";
+        imb.src = "pengshi_1.png";
+        ita.style.backgroundColor = '#fff';
+        itb.style.backgroundColor = '#fff';
+        ima.style.backgroundColor = '#fff';
+        imb.style.backgroundColor = '#fff';
+        tmp.style.display = "none";
+    }
+    function get() {
+        if (localStorage.ta * localStorage.tb * localStorage.ma * localStorage.mb != 0) {
+            if (ima.style.backgroundColor == "rgb(170, 170, 255)") var th = "ma";
+            else if (imb.style.backgroundColor == "rgb(170, 170, 255)") var th = "mb";
+            else return;
+            if (ita.style.backgroundColor == "rgb(136, 221, 136)")
+                localStorage[th] = (localStorage[th] * 1 + localStorage.ta * 1) % 10;
+            else if (itb.style.backgroundColor == "rgb(136, 221, 136)")
+                localStorage[th] = (localStorage[th] * 1 + localStorage.tb * 1) % 10;
+            else return;
+            localStorage.lt++;
+            ilt.innerHTML = localStorage.lt;
+            iult.innerHTML = Math.max(localStorage.lt, iult.innerHTML);
+            if (list[0].checked) localStorage.ults = iult.innerHTML;
+            else localStorage.ultn = iult.innerHTML;
+            document.getElementById("i" + th).src = "pengshi_" + localStorage[th] + ".png";
+            if (localStorage[th] == 0) {
+                ita.style.backgroundColor = '#fff';
+                itb.style.backgroundColor = '#fff';
+                ima.style.backgroundColor = '#fff';
+                imb.style.backgroundColor = '#fff';
+                document.getElementById("i" + th).style.backgroundColor = '#d88';
+                if (localStorage.lt < imlt.innerHTML || imlt.innerHTML == 0) {
+                    if (list[0].checked) localStorage.mlts = localStorage.lt;
+                    else localStorage.mltn = localStorage.lt;
+                    imlt.innerHTML = localStorage.lt;
+                }
+                res.innerHTML = "好吧,你赢了";
+                tmp.style.display = "block";
+                return;
+            }
+            var nums = 0;
+            var num = [];
+            var numt = [];
+            numt[1] = (localStorage.ta * 1 + localStorage.ma * 1) % 10;
+            numt[2] = (localStorage.ta * 1 + localStorage.mb * 1) % 10;
+            numt[3] = (localStorage.tb * 1 + localStorage.ma * 1) % 10;
+            numt[4] = (localStorage.tb * 1 + localStorage.mb * 1) % 10;
+            if (numt[1] == 0 || numt[2] == 0) {
+                localStorage.ta = 0;
+                ita.src = "pengshi_0.png";
+                ita.style.backgroundColor = '#d88';
+                itb.style.backgroundColor = '#fff';
+                ima.style.backgroundColor = '#fff';
+                imb.style.backgroundColor = '#fff';
+                res.innerHTML = "哈哈,输了";
+                tmp.style.display = "block";
+                return;
+            }
+            if (numt[3] == 0 || numt[4] == 0) {
+                localStorage.tb = 0;
+                itb.src = "pengshi_0.png";
+                ita.style.backgroundColor = '#fff';
+                itb.style.backgroundColor = '#d88';
+                ima.style.backgroundColor = '#fff';
+                imb.style.backgroundColor = '#fff';
+                res.innerHTML = "哈哈,输了";
+                tmp.style.display = "block";
+                return;
+            }
+            num[0] = 1;
+            if ((numt[1] + localStorage.mb * 1) % 10 != 0) {
+                if ((numt[1] + localStorage.ma * 1) % 10 != 0) { num[nums] = 1; nums++; }
+                if ((numt[2] + localStorage.mb * 1) % 10 != 0) { num[nums] = 2; nums++; }
+            }
+            if ((numt[3] + localStorage.mb * 1) % 10 != 0) {
+                if ((numt[3] + localStorage.ma * 1) % 10 != 0) { num[nums] = 3; nums++; }
+                if ((numt[4] + localStorage.mb * 1) % 10 != 0) { num[nums] = 4; nums++; }
+            }
+            if (localStorage.state == "true" || nums < 2)
+                var ran = num[Math.floor(Math.random() * nums)];
+            else {
+                var numsn = 0;
+                var numn = [];
+                numn[0] = num[0];
+                for (i = 0; i < nums; i++)
+                    if ((numt[num[i]] + (num[i] < 3 ? localStorage.tb : localStorage.ta) * 1 + localStorage.ma * 1) % 10 == 0 || (numt[num[i]] + (num[i] < 3 ? localStorage.tb : localStorage.ta) * 1 + localStorage.mb * 1) % 10 == 0 || (numt[num[i]] + (num[i] < 3 ? localStorage.tb : localStorage.ta) * 1 + localStorage.ma * 1) == 15 && Math.abs(localStorage.tb - localStorage.ta) == 5 || (numt[num[i]] + (num[i] < 3 ? localStorage.tb : localStorage.ta) * 1 + localStorage.mb * 1) == 15 && Math.abs(localStorage.tb - localStorage.ta) == 5) { numn[numsn] = num[i]; numsn++; }
+                var ran = numn[Math.floor(Math.random() * numsn)];
+            }
+            if (ran < 3) { localStorage.ta = numt[ran]; ita.src = "pengshi_" + numt[ran] + ".png"; }
+            else { localStorage.tb = numt[ran]; itb.src = "pengshi_" + numt[ran] + ".png"; }
+        }
+        ita.style.backgroundColor = '#fff';
+        itb.style.backgroundColor = '#fff';
+        ima.style.backgroundColor = '#fff';
+        imb.style.backgroundColor = '#fff';
+    }
+
+</script>
