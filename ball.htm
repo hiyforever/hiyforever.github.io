@@ -1,0 +1,138 @@
+<style>
+    body {
+        margin: 0;
+    }
+
+    div {
+        position: absolute;
+        border-radius: 50%;
+    }
+</style>
+<body></body>
+<script>
+    var balls = [];
+
+    function Ball(m, r, color, px, py, vx, vy, ax, ay) {
+        var ball = this;
+        ball.px = px;
+        ball.py = py;
+        ball.vx = vx | 0;
+        ball.vy = vy | 0;
+        ball.ax = ax | 0;
+        ball.ay = ay | 0;
+        ball.m = m;
+        ball.r = r;
+        ball.id = document.createElement("div");
+        ball.style = ball.id.style;
+        ball.style.width = ball.style.height = ball.r * 2 + "px";
+        ball.style.marginTop = ball.style.marginLeft = -ball.r + "px";
+        ball.style.backgroundColor = color;
+        ball.style.left = ball.px + "px";
+        ball.style.top = ball.py + "px";
+        document.body.appendChild(ball.id);
+        setInterval(function () {
+            ball.px = parseFloat(ball.style.left) + ball.vx / 1000;
+        }, 0);
+        setInterval(function () {
+            ball.py = parseFloat(ball.style.top) + ball.vy / 1000;
+        }, 0);
+        setInterval(function () {
+            ball.style.left = ball.px + "px";
+        }, 0);
+        setInterval(function () {
+            ball.style.top = ball.py + "px";
+        }, 0);
+        setInterval(function () {
+            ball.vx += ball.ax / 1000;
+        }, 0);
+        setInterval(function () {
+            ball.vy += ball.ay / 1000;
+        }, 0);
+        setInterval(function () {
+            if (ball.px < ball.r) {
+                ball.vx = Math.abs(ball.vx);
+            }
+        }, 0);
+        setInterval(function () {
+            if (ball.px > document.body.clientWidth - ball.r) {
+                ball.vx = -Math.abs(ball.vx);
+            }
+        }, 0);
+        setInterval(function () {
+            if (ball.py < ball.r) {
+                ball.vy = Math.abs(ball.vy);
+            }
+        }, 0);
+        setInterval(function () {
+            if (ball.py > document.body.clientHeight - ball.r) {
+                ball.vy = -Math.abs(ball.vy);
+            }
+        }, 0);
+        for (b in balls) {
+            setInterval((function (ba) {
+                return function () {
+                    var dpx = ba.px - ball.px;
+                    var dpy = ba.py - ball.py;
+                    var sqrt = Math.sqrt(Math.pow(dpx, 2) + Math.pow(dpy, 2));
+                    if (sqrt < ba.r + ball.r) {
+                        var sin = dpy / sqrt;
+                        var cos = dpx / sqrt;
+                        var vy = ball.vx * cos + ball.vy * sin;
+                        var tvy = ba.vx * cos + ba.vy * sin;
+                        if (vy >= tvy) {
+                            var vx = ball.vx * sin - ball.vy * cos;
+                            var tvx = ba.vx * sin - ba.vy * cos;
+                            var pvy = ((ball.m - ba.m) * vy + 2 * ba.m * tvy) / (ball.m + ba.m);
+                            var ptvy = ((ba.m - ball.m) * tvy + 2 * ball.m * vy) / (ball.m + ba.m);
+                            ball.vx = vx * sin + pvy * cos;
+                            ball.vy = pvy * sin - vx * cos;
+                            ba.vx = tvx * sin + ptvy * cos;
+                            ba.vy = ptvy * sin - tvx * cos;
+                        }
+                    }
+                }
+            })(balls[b]), 0);
+            setInterval((function (ba) {
+                return function () {
+                    var dpx = ba.px - ball.px;
+                    var dpy = ba.py - ball.py;
+                    var pow = Math.pow(dpx, 2) + Math.pow(dpy, 2);
+                    var sqrt = Math.sqrt(pow);
+                    if (sqrt > ba.r + ball.r) {
+                        var sin = dpy / sqrt;
+                        var cos = dpx / sqrt;
+                        var vx = ball.vx * sin - ball.vy * cos;
+                        var tvx = ba.vx * sin - ba.vy * cos;
+                        var f = ba.__proto__.constructor.name == ball.__proto__.constructor.name ? 1 : -1;
+                        var vy = ball.vx * cos + ball.vy * sin - f * ba.m / pow;
+                        var tvy = ba.vx * cos + ba.vy * sin + f * ball.m / pow;
+                        ball.vx = vx * sin + vy * cos;
+                        ball.vy = vy * sin - vx * cos;
+                        ba.vx = tvx * sin + tvy * cos;
+                        ba.vy = tvy * sin - tvx * cos;
+                    }
+                }
+            })(balls[b]), 0);
+        }
+        balls.push(ball);
+    }
+
+    function C(px, py, vx, vy, ax, ay) {
+        this.parent = Ball;
+        this.parent(1000, 10, "red", px, py, vx, vy, ax, ay);
+        delete this.parent;
+    }
+
+    function O(px, py, vx, vy, ax, ay) {
+        this.parent = Ball;
+        this.parent(1, 5, "blue", px, py, vx, vy, ax, ay);
+        delete this.parent;
+    }
+
+    for (var i = 0; i < 1; i++) {
+        new C(400, 80 + i * 80 + 15);
+    }
+    for (i = 0; i < 10; i++) {
+        new O(500, 30 + i);
+    }
+</script>
