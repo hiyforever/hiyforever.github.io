@@ -142,7 +142,7 @@
                 ima.style.backgroundColor = '#fff';
                 imb.style.backgroundColor = '#fff';
                 res.innerHTML = "哈哈,输了";
-                tmp.style.display = "block";
+                setTimeout(() => tmp.style.display = "block", 1000);
                 return;
             }
             if (numt[3] == 0 || numt[4] == 0) {
@@ -153,7 +153,7 @@
                 ima.style.backgroundColor = '#fff';
                 imb.style.backgroundColor = '#fff';
                 res.innerHTML = "哈哈,输了";
-                tmp.style.display = "block";
+                setTimeout(() => tmp.style.display = "block", 1000);
                 return;
             }
             num[0] = 1;
@@ -175,8 +175,8 @@
                     if ((numt[num[i]] + (num[i] < 3 ? localStorage.tb : localStorage.ta) * 1 + localStorage.ma * 1) % 10 == 0 || (numt[num[i]] + (num[i] < 3 ? localStorage.tb : localStorage.ta) * 1 + localStorage.mb * 1) % 10 == 0 || (numt[num[i]] + (num[i] < 3 ? localStorage.tb : localStorage.ta) * 1 + localStorage.ma * 1) == 15 && Math.abs(localStorage.tb - localStorage.ta) == 5 || (numt[num[i]] + (num[i] < 3 ? localStorage.tb : localStorage.ta) * 1 + localStorage.mb * 1) == 15 && Math.abs(localStorage.tb - localStorage.ta) == 5) { numn[numsn] = num[i]; numsn++; }
                 var ran = numn[Math.floor(Math.random() * numsn)];
             }
-            if (ran < 3) { localStorage.ta = numt[ran]; ita.src = "pengshi_" + numt[ran] + ".png"; }
-            else { localStorage.tb = numt[ran]; itb.src = "pengshi_" + numt[ran] + ".png"; }
+            if (ran < 3) { localStorage.ta = numt[ran]; setTimeout(() => ita.src = "pengshi_" + numt[ran] + ".png", 1000); }
+            else { localStorage.tb = numt[ran]; setTimeout(() => itb.src = "pengshi_" + numt[ran] + ".png", 1000); }
         }
         ita.style.backgroundColor = '#fff';
         itb.style.backgroundColor = '#fff';
