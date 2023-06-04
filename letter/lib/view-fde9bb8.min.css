@@ -1610,7 +1610,8 @@ img {
 
 img {
     -webkit-user-select: none;
-    -moz-user-select: none
+    -moz-user-select: none;
+    user-select: none;
 }
 
 .edit_wrapper {
@@ -1669,7 +1670,8 @@ img {
     min-height: 1px;
     min-width: 1px;
     width: 100%;
-    -webkit-user-select: none
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .edit_area .item-group li *,
@@ -1723,6 +1725,7 @@ img {
     z-index: 0;
     display: none;
     -webkit-transform-origin: center center;
+    transform-origin: center center;
     background: #f3f3f3
 }
 
